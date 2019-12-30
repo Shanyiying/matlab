@@ -1,0 +1,25 @@
+clear all;clc;close all;
+ImDataFile='C:\Users\Administrator\Desktop\walldata\W1\W1_data.mat';
+DRepos=importdata(ImDataFile);
+IO=[DRepos.A_input(1:392964),DRepos.A_output1(1:392964),DRepos.A_output2(1:392964),DRepos.A_output3(1:392964),DRepos.A_output4(1:392964),DRepos.A_output5(1:392964),DRepos.A_output6(1:392964),DRepos.A_output7(1:392964)];
+SplFreqcy=200;%读入采样频率值
+DeltaT=1/SplFreqcy;
+t=[0:1/SplFreqcy:(size(IO,1)-1)/SplFreqcy]';%建立离散时间列向量
+DtrdOdr=2;%读入拟合多项式阶数 
+
+for i=1:size(IO,2)
+    IO(:,i)=dtrend(IO(:,i)-polyval(polyfit(t,IO(:,i),DtrdOdr),t));%减去多项式系数生成的趋势项
+end
+plot(t,IO(:,3))
+A_input1T=IO(80001:84096,1); A_output1T=IO(80001:84096,2);A_output2T=IO(80001:84096,3);A_output3T=IO(80001:84096,4);
+A_output4T=IO(80001:84096,5);A_output5T=IO(80001:84096,6);A_output6T=IO(80001:84096,7);
+A_output7T=IO(80001:84096,8);
+M=DRepos.M; 
+C=DRepos.C;
+K=DRepos.K; 
+D=[DRepos.juzhen;DRepos.juzhen]; 
+juzhen=DRepos.juzhen;
+C_unit='N.s/m';
+K_unit='N/m';
+M_unit='Kg';
+ save('W1T_data','A_input1T','A_output1T','A_output2T','A_output3T','A_output4T','A_output5T','A_output6T','A_output7T'）
